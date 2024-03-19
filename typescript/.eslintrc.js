@@ -22,11 +22,11 @@ module.exports = {
       "error",
       {
         "selector": "variable",
-        "format": ["snake_case"]
+        "format": ["camelCase"]
       },
       {
         "selector": "property",
-        "format": ["snake_case", "camelCase"],
+        "format": ["camelCase"],
       },
       {
         "selector": "function",
