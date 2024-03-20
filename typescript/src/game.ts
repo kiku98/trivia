@@ -1,10 +1,10 @@
 export class Game {
-  private players: Array<string> = [];
-  private places: Array<number> = [];
-  private purses: Array<number> = [];
-  private inPenaltyBox: Array<boolean> = [];
-  private currentPlayer: number = 0;
-  private isGettingOutOfPenaltyBox: boolean = false;
+  public players: Array<string> = [];
+  public places: Array<number> = [];
+  public purses: Array<number> = [];
+  public inPenaltyBox: Array<boolean> = [];
+  public currentPlayer: number = 0;
+  public isGettingOutOfPenaltyBox: boolean = false;
 
   private popQuestions: Array<string> = [];
   private scienceQuestions: Array<string> = [];

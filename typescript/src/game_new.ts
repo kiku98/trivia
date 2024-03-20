@@ -43,16 +43,8 @@ export enum Category {
   ROCK,
 }
 
-export interface Question {
-  title: string;
-}
-
-export class RockQuestion implements Question {
-  title: string;
-}
-
 export class Game {
-  private players: Array<Player> = [];
+  public players: Array<Player> = [];
 
   private currentPlayer: number = 0;
 
@@ -113,12 +105,15 @@ export class Game {
   }
 
   private askQuestion(): void {
-    if (this.currentCategory() == 'Pop') console.log(this.popQuestions.shift());
-    if (this.currentCategory() == 'Science')
+    const currentPlayer = this.players[this.currentPlayer];
+
+    if (currentPlayer.getCategory() == Category.POP)
+      console.log(this.popQuestions.shift());
+    if (currentPlayer.getCategory() == Category.SCIENCE)
       console.log(this.scienceQuestions.shift());
-    if (this.currentCategory() == 'Sports')
+    if (currentPlayer.getCategory() == Category.SPORTS)
       console.log(this.sportsQuestions.shift());
-    if (this.currentCategory() == 'Rock')
+    if (currentPlayer.getCategory() == Category.ROCK)
       console.log(this.rockQuestions.shift());
   }
 
@@ -157,18 +152,20 @@ export class Game {
   }
 
   public wasCorrectlyAnswered(): boolean {
-    if (this.players[this.currentPlayer].inPenaltyBox) {
+    const currentPlayer = this.players[this.currentPlayer];
+
+    if (currentPlayer.inPenaltyBox) {
       if (this.isGettingOutOfPenaltyBox) {
         console.log('Answer was correct!!!!');
-        this.players[this.currentPlayer].purse += 1;
+        currentPlayer.incrementPurse();
         console.log(
-          this.players[this.currentPlayer] +
+          currentPlayer.name +
             ' now has ' +
-            this.players[this.currentPlayer].purse +
+            currentPlayer.purse +
             ' Gold Coins.',
         );
 
-        var winner = this.didPlayerWin();
+        const winner = this.didPlayerWin();
         this.currentPlayer += 1;
         this.setNextPlayer();
 
@@ -181,15 +178,12 @@ export class Game {
     } else {
       console.log('Answer was corrent!!!!');
 
-      this.players[this.currentPlayer].purse += 1;
+      currentPlayer.incrementPurse();
       console.log(
-        this.players[this.currentPlayer] +
-          ' now has ' +
-          this.players[this.currentPlayer].purse +
-          ' Gold Coins.',
+        currentPlayer.name + ' now has ' + currentPlayer.purse + ' Gold Coins.',
       );
 
-      var winner = this.didPlayerWin();
+      const winner = this.didPlayerWin();
 
       this.currentPlayer += 1;
       this.setNextPlayer();
