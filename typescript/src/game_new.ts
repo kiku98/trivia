@@ -12,6 +12,37 @@ export class Player {
   }
 }
 
+export class Place {
+  place: number;
+  getCategory(): Category {
+    switch (this.place % 4) {
+      case 0:
+        return Category.POP;
+      case 1:
+        return Category.SCIENCE;
+      case 2:
+        return Category.POP;
+      default:
+        return Category.ROCK;
+    }
+  }
+}
+
+export enum Category {
+  POP,
+  SCIENCE,
+  SPORTS,
+  ROCK,
+}
+
+export interface Question {
+  title: string;
+}
+
+export class RockQuestion implements Question {
+  title: string;
+}
+
 export class Game {
   private players: Array<Player> = [];
 
@@ -54,12 +85,7 @@ export class Game {
           this.players[this.currentPlayer] +
             ' is getting out of the penalty box',
         );
-        this.players[this.currentPlayer].place =
-          this.players[this.currentPlayer].place + roll;
-        if (this.players[this.currentPlayer].place > 11) {
-          this.players[this.currentPlayer].place =
-            this.players[this.currentPlayer].place - 12;
-        }
+        this.updatePlayerPlace(roll);
 
         console.log(
           this.players[this.currentPlayer] +
@@ -76,12 +102,7 @@ export class Game {
         this.isGettingOutOfPenaltyBox = false;
       }
     } else {
-      this.players[this.currentPlayer].place =
-        this.players[this.currentPlayer].place + roll;
-      if (this.players[this.currentPlayer].place > 11) {
-        this.players[this.currentPlayer].place =
-          this.players[this.currentPlayer].place - 12;
-      }
+      this.updatePlayerPlace(roll);
 
       console.log(
         this.players[this.currentPlayer] +
@@ -90,6 +111,15 @@ export class Game {
       );
       console.log('The category is ' + this.currentCategory());
       this.askQuestion();
+    }
+  }
+
+  updatePlayerPlace(roll: number): void {
+    this.players[this.currentPlayer].place =
+      this.players[this.currentPlayer].place + roll;
+    if (this.players[this.currentPlayer].place > 11) {
+      this.players[this.currentPlayer].place =
+        this.players[this.currentPlayer].place - 12;
     }
   }
 
@@ -104,16 +134,16 @@ export class Game {
   }
 
   private currentCategory(): string {
-    if (this.players[this.currentPlayer].place == 0) return 'Pop';
-    if (this.players[this.currentPlayer].place == 4) return 'Pop';
-    if (this.players[this.currentPlayer].place == 8) return 'Pop';
-    if (this.players[this.currentPlayer].place == 1) return 'Science';
-    if (this.players[this.currentPlayer].place == 5) return 'Science';
-    if (this.players[this.currentPlayer].place == 9) return 'Science';
-    if (this.players[this.currentPlayer].place == 2) return 'Sports';
-    if (this.players[this.currentPlayer].place == 6) return 'Sports';
-    if (this.players[this.currentPlayer].place == 10) return 'Sports';
-    return 'Rock';
+    switch (this.players[this.currentPlayer].place % 4) {
+      case 0:
+        return 'Pop';
+      case 1:
+        return 'Science';
+      case 2:
+        return 'Sports';
+      default:
+        return 'Rock';
+    }
   }
 
   private didPlayerWin(): boolean {
@@ -129,11 +159,11 @@ export class Game {
 
     this.currentPlayer += 1;
 
-    this.nextPlayer();
+    this.setNextPlayer();
     return true;
   }
 
-  private nextPlayer(): void {
+  private setNextPlayer(): void {
     if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
   }
 
@@ -151,12 +181,12 @@ export class Game {
 
         var winner = this.didPlayerWin();
         this.currentPlayer += 1;
-        this.nextPlayer();
+        this.setNextPlayer();
 
         return winner;
       } else {
         this.currentPlayer += 1;
-        this.nextPlayer();
+        this.setNextPlayer();
         return true;
       }
     } else {
@@ -173,7 +203,7 @@ export class Game {
       var winner = this.didPlayerWin();
 
       this.currentPlayer += 1;
-      this.nextPlayer();
+      this.setNextPlayer();
 
       return winner;
     }
