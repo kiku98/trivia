@@ -10,10 +10,14 @@ export class Player {
     this.purse = 0;
     this.inPenaltyBox = false;
   }
-}
 
-export class Place {
-  place: number;
+  moveXSteps(roll: number): void {
+    this.place = this.place + roll;
+    if (this.place > 11) {
+      this.place = this.place - 12;
+    }
+  }
+
   getCategory(): Category {
     switch (this.place % 4) {
       case 0:
@@ -25,6 +29,10 @@ export class Place {
       default:
         return Category.ROCK;
     }
+  }
+
+  incrementPurse(): void {
+    this.purse++;
   }
 }
 
@@ -74,52 +82,33 @@ export class Game {
   }
 
   public roll(roll: number): void {
-    console.log(this.players[this.currentPlayer] + ' is the current player');
+    const currentPlayer = this.players[this.currentPlayer];
+
+    console.log(currentPlayer + ' is the current player');
     console.log('They have rolled a ' + roll);
 
-    if (this.players[this.currentPlayer].inPenaltyBox) {
+    if (currentPlayer.inPenaltyBox) {
       if (roll % 2 != 0) {
         this.isGettingOutOfPenaltyBox = true;
 
-        console.log(
-          this.players[this.currentPlayer] +
-            ' is getting out of the penalty box',
-        );
-        this.updatePlayerPlace(roll);
+        console.log(currentPlayer + ' is getting out of the penalty box');
+        currentPlayer.moveXSteps(roll);
 
         console.log(
-          this.players[this.currentPlayer] +
-            "'s new location is " +
-            this.players[this.currentPlayer].place,
+          currentPlayer + "'s new location is " + currentPlayer.place,
         );
         console.log('The category is ' + this.currentCategory());
         this.askQuestion();
       } else {
-        console.log(
-          this.players[this.currentPlayer] +
-            ' is not getting out of the penalty box',
-        );
+        console.log(currentPlayer + ' is not getting out of the penalty box');
         this.isGettingOutOfPenaltyBox = false;
       }
     } else {
-      this.updatePlayerPlace(roll);
+      currentPlayer.moveXSteps(roll);
 
-      console.log(
-        this.players[this.currentPlayer] +
-          "'s new location is " +
-          this.players[this.currentPlayer].place,
-      );
+      console.log(currentPlayer + "'s new location is " + currentPlayer.place);
       console.log('The category is ' + this.currentCategory());
       this.askQuestion();
-    }
-  }
-
-  updatePlayerPlace(roll: number): void {
-    this.players[this.currentPlayer].place =
-      this.players[this.currentPlayer].place + roll;
-    if (this.players[this.currentPlayer].place > 11) {
-      this.players[this.currentPlayer].place =
-        this.players[this.currentPlayer].place - 12;
     }
   }
 
